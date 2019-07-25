@@ -4,18 +4,18 @@ project (decomp)
 set(CMAKE_CXX_STANDARD 11)
 set(TARGET_NAME ${PROJECT_NAME})
 
-option(${PROJECT_NAME}_USE_CONAN "Use conan" ON)
-option(${PROJECT_NAME}_BUILD_TESTS "Build tests" ON)
+option(${PROJECT_NAME}_USE_CONAN "Use conan" OFF)
+option(${PROJECT_NAME}_BUILD_TESTS "Build tests" OFF)
 
 if (${${PROJECT_NAME}_BUILD_TESTS} AND NOT ${${PROJECT_NAME}_USE_CONAN} )
   message(FATAL_ERROR "Cannot build tests without conan")
 endif()
 
 if (${${PROJECT_NAME}_USE_CONAN})
-  find_file( Conan_BUILD_INFO conanbuildinfo.cmake ${CMAKE_BINARY_DIR} )
+  find_file( Conan_BUILD_INFO conanbuildinfo.cmake ${CMAKE_CURRENT_BINARY_DIR} )
   if( NOT EXISTS ${Conan_BUILD_INFO} )
-    execute_process(COMMAND conan install -g cmake ${CMAKE_SOURCE_DIR} )
-    find_file( Conan_BUILD_INFO conanbuildinfo.cmake ${CMAKE_BINARY_DIR} )
+    execute_process(COMMAND conan install -g cmake ${CMAKE_CURRENT_SOURCE_DIR} )
+    find_file( Conan_BUILD_INFO conanbuildinfo.cmake ${CMAKE_CURRENT_BINARY_DIR} )
     if(NOT EXISTS ${Conan_BUILD_INFO})
       MESSAGE( FATAL_ERROR "Unable to build conan info file")
     endif()
@@ -32,13 +32,21 @@ set(HEADERS
   source/decomp/operations.hpp
   source/decomp/output.hpp)
 
+set( SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/source/decomp/convex_decomposition.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/source/decomp/triangulation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/source/decomp/operations.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/source/decomp/output.cpp
+        )
+
+# expose the source list to any calling parent (hacky)
+set( decomp_SOURCES ${SOURCES} PARENT_SCOPE )
+
 # Build the main library
 add_library(${TARGET_NAME}
   ${HEADERS}
-  source/decomp/convex_decomposition.cpp
-  source/decomp/triangulation.cpp
-  source/decomp/operations.cpp
-  source/decomp/output.cpp)
+  ${SOURCES}
+)
 
 target_include_directories(${TARGET_NAME}
   INTERFACE source)

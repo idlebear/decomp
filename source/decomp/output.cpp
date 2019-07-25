@@ -84,6 +84,50 @@ void svg::writePolygon(std::ostream& svg, PointList const& points, IndexList con
     writeSvgFooter(svg);
 }
 
+
+void svg::writePolygonList(std::ostream& svg, PointList const& points, std::vector<IndexList> const& indexLists,
+                      std::vector<std::vector<IndexList>> const& holeLists) {
+    Point min{ std::numeric_limits<float>::max() };
+    Point max{ -std::numeric_limits<float>::max() };
+
+    for (auto const& each : points)
+    {
+        for (int i = 0; i < 2; ++i)
+        {
+            min[i] = std::min(min[i], each[i]);
+            max[i] = std::max(max[i], each[i]);
+        }
+    }
+    writeSvgHeader(svg, min, max);
+
+    const char* colours[] {
+            "#00a",
+            "#00b",
+            "#0a0",
+            "#0b0",
+            "#a00",
+            "#b00"
+    };
+    const int MAX_COLOUR = 6;
+
+    auto n = indexLists.size();
+    for( int i = 0; i < n; i++ ) {
+        auto const& indices = indexLists[i];
+        auto const& holes = holeLists[i];
+
+        writeSvgPolygon(svg, points, indices, "#000");
+        auto colour = colours[i%MAX_COLOUR];
+        for (auto const& hole : holes)
+        {
+            writeSvgPolygon(svg, points, hole, colour);
+        }
+
+        writeSvgPointIndices(svg, points);
+    }
+
+    writeSvgFooter(svg);
+}
+
 void svg::writeTriangles(std::ostream& svg, PointList const& points, IndexList const& indices)
 {
     Point min{ std::numeric_limits<float>::max() };

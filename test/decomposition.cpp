@@ -1,6 +1,10 @@
 #include <algorithm>
 #include <decomp/convex_decomposition.hpp>
 #include <catch2/catch.hpp>
+#include <fstream>
+#include <iostream>
+
+#include "decomp/output.hpp"
 
 using namespace decomp;
 
@@ -147,6 +151,14 @@ TEST_CASE("large-decomposition")
     REQUIRE(computeWinding(pointList, hole) == Winding::Clockwise);
 
     auto decomposed = decompose(pointList, outerPolygon, { hole });
+
+    std::ofstream svg2("largeDecomp.svg");
+    std::vector<std::vector<IndexList>> holeLists;
+    for( auto const& poly: decomposed ) {
+        std::vector<IndexList> holes;
+        holeLists.emplace_back( holes );
+    }
+    decomp::svg::writePolygonList(svg2, pointList, decomposed, holeLists);
 
     REQUIRE(allConvex(pointList, decomposed));
 }

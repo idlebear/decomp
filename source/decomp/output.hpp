@@ -14,6 +14,11 @@ namespace svg
 void writePolygon(std::ostream& out, PointList const& points, IndexList const& indices,
         std::vector<IndexList> const& holes);
 
+/** Render the given list of polygons as SVG, mostly for debugging
+ */
+void writePolygonList(std::ostream& out, PointList const& points, std::vector<IndexList> const& indexLists,
+        std::vector<std::vector<IndexList>> const& holeLists);
+
 /** Render the given triangles as SVG, mostly for debugging
  */
 void writeTriangles(std::ostream& out, PointList const& points, IndexList const& indices);

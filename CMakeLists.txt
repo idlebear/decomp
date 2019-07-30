@@ -7,11 +7,11 @@ set(TARGET_NAME ${PROJECT_NAME})
 option(${PROJECT_NAME}_USE_CONAN "Use conan" OFF)
 option(${PROJECT_NAME}_BUILD_TESTS "Build tests" OFF)
 
-if (${${PROJECT_NAME}_BUILD_TESTS} AND NOT ${${PROJECT_NAME}_USE_CONAN} )
+if (${PROJECT_NAME}_BUILD_TESTS AND NOT ${PROJECT_NAME}_USE_CONAN )
   message(FATAL_ERROR "Cannot build tests without conan")
 endif()
 
-if (${${PROJECT_NAME}_USE_CONAN})
+if (${PROJECT_NAME}_USE_CONAN)
   find_file( Conan_BUILD_INFO conanbuildinfo.cmake ${CMAKE_CURRENT_BINARY_DIR} )
   if( NOT EXISTS ${Conan_BUILD_INFO} )
     execute_process(COMMAND conan install -g cmake ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -60,7 +60,7 @@ install(FILES
   include/decomp/)
 
 # Only enable tests for top-level projects
-if(${${PROJECT_NAME}_BUILD_TESTS})
+if(${PROJECT_NAME}_BUILD_TESTS)
   set(TEST_NAME test_${PROJECT_NAME})
   add_executable(${TEST_NAME}
     test/test_main.cpp

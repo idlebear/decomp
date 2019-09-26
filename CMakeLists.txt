@@ -51,26 +51,51 @@ add_library(${TARGET_NAME}
 target_include_directories(${TARGET_NAME}
   INTERFACE source)
 
-install(TARGETS ${TARGET_NAME}
-  ARCHIVE DESTINATION lib)
 
-install(FILES
-  ${HEADERS}
-  DESTINATION
-  include/decomp/)
+###################################
+## catkin specific configuration ##
+###################################
+## The catkin_package macro generates cmake config files for your package
+## Declare things to be passed to dependent projects
+## INCLUDE_DIRS: uncomment this if your package contains header files
+## LIBRARIES: libraries you create in this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## DEPENDS: system dependencies of this project that dependent projects also need
+catkin_package(
+  INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/decomp
+  LIBRARIES ${TARGET_NAME}
+  CATKIN_DEPENDS 
+  DEPENDS 
+)
+
+
+
+## Mark executables and/or libraries for installation
+install(TARGETS ${PROJECT_NAME}
+   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+## Mark cpp header files for installation
+install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
+ )
 
 # Only enable tests for top-level projects
-if(${PROJECT_NAME}_BUILD_TESTS)
-  set(TEST_NAME test_${PROJECT_NAME})
-  add_executable(${TEST_NAME}
-    test/test_main.cpp
-    test/remapper.cpp
-    test/remove_holes.cpp
-    test/ear_clipping.cpp
-    test/half_edge.cpp
-    test/decomposition.cpp
-    test/winding.cpp)
-
-  target_link_libraries(${TEST_NAME}
-    PUBLIC decomp CONAN_PKG::Catch2)
-endif()
+#if(${PROJECT_NAME}_BUILD_TESTS)
+#  set(TEST_NAME test_${PROJECT_NAME})
+#  add_executable(${TEST_NAME}
+#    test/test_main.cpp
+#    test/remapper.cpp
+#    test/remove_holes.cpp
+#    test/ear_clipping.cpp
+#    test/half_edge.cpp
+#    test/decomposition.cpp
+#    test/winding.cpp)
+#
+#  target_link_libraries(${TEST_NAME}
+#    PUBLIC decomp CONAN_PKG::Catch2)
+#endif()

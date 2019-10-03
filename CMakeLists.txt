@@ -4,6 +4,8 @@ project (decomp)
 set(CMAKE_CXX_STANDARD 11)
 set(TARGET_NAME ${PROJECT_NAME})
 
+find_package(catkin REQUIRED)
+
 option(${PROJECT_NAME}_USE_CONAN "Use conan" OFF)
 option(${PROJECT_NAME}_BUILD_TESTS "Build tests" OFF)
 
